@@ -21,6 +21,7 @@ class SpecsSection(Adw.PreferencesGroup):
         self.row_resolution.add_prefix(Gtk.Image.new_from_icon_name("video-display-symbolic"))
         self.ratio_badge = Gtk.Label(label="")
         self.ratio_badge.add_css_class("theme-badge")
+        self.ratio_badge.add_css_class("ratio-badge")
         self.ratio_badge.set_valign(Gtk.Align.CENTER)
         self.row_resolution.add_suffix(self.ratio_badge)
 

@@ -39,6 +39,7 @@ class DetailsCard(Gtk.Box):
 
         self.conn_badge = Gtk.Label(label="Disconnected")
         self.conn_badge.add_css_class("theme-badge")
+        self.conn_badge.add_css_class("badge-disconnected")
         self.conn_badge.set_valign(Gtk.Align.CENTER)
         header_box.append(self.conn_badge)
 
@@ -149,6 +150,17 @@ class DetailsCard(Gtk.Box):
 
         conn = info.get('connection', 'Disconnected')
         self.conn_badge.set_text(conn)
+
+        for cls in ("badge-connected", "badge-usb", "badge-wifi", "badge-disconnected"):
+            self.conn_badge.remove_css_class(cls)
+
+        if conn == "USB":
+            self.conn_badge.add_css_class("badge-usb")
+        elif conn == "Wi-Fi":
+            self.conn_badge.add_css_class("badge-wifi")
+        else:
+            self.conn_badge.add_css_class("badge-disconnected")
+
         return False
 
     def on_screenshot_clicked(self):
