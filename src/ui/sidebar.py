@@ -70,9 +70,12 @@ class AndySidebar(Gtk.Box):
 
         prof_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.profile_dropdown.set_hexpand(True)
+        self.profile_dropdown.add_css_class("sidebar-dropdown")
         prof_row.append(self.profile_dropdown)
 
         self.save_button.set_tooltip_text("Save Active Profile")
+        self.save_button.add_css_class("sidebar-btn")
+        self.save_button.add_css_class("sidebar-save-btn")
         prof_row.append(self.save_button)
         self.append(prof_row)
 
@@ -86,6 +89,7 @@ class AndySidebar(Gtk.Box):
 
         self.theme_button.set_halign(Gtk.Align.FILL)
         self.theme_button.add_css_class("sidebar-btn")
+        self.theme_button.add_css_class("sidebar-theme-btn")
         self.append(self.theme_button)
 
         # 4. System & Preferences Section
@@ -98,11 +102,13 @@ class AndySidebar(Gtk.Box):
 
         self.settings_button.set_halign(Gtk.Align.FILL)
         self.settings_button.add_css_class("sidebar-btn")
+        self.settings_button.add_css_class("sidebar-settings-btn")
         self.append(self.settings_button)
 
         self.about_button = Gtk.Button(label="About Andy", icon_name="help-about-symbolic")
         self.about_button.set_halign(Gtk.Align.FILL)
         self.about_button.add_css_class("sidebar-btn")
+        self.about_button.add_css_class("sidebar-about-btn")
         if on_about_clicked:
             self.about_button.connect("clicked", lambda b: on_about_clicked())
         self.append(self.about_button)

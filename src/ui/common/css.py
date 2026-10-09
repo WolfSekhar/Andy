@@ -145,10 +145,11 @@ APPLICATION_CSS = b"""
         transition: all 150ms ease-in-out;
     }
 
-    /* Permanent Slim Utility Sidebar */
+    /* Permanent Slim Utility Sidebar (Unified with App Background) */
     .sidebar-pane {
-        background-color: alpha(@card_bg_color, 0.45);
-        border-right: 1px solid @borders;
+        background-color: transparent;
+        background: transparent;
+        border-right: 1px solid alpha(currentColor, 0.08);
         padding: 16px 14px;
     }
     .sidebar-pane .dim-label {
@@ -158,9 +159,79 @@ APPLICATION_CSS = b"""
     }
     .sidebar-btn {
         padding: 8px 12px;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 150ms ease-in-out;
+        border-radius: 9px;
+        font-weight: 600;
+        transition: all 160ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Beautified Colored Sidebar Elements */
+    .sidebar-dropdown > button {
+        background-color: alpha(@accent_bg_color, 0.14);
+        color: @accent_color;
+        border: 1px solid alpha(@accent_color, 0.28);
+        border-radius: 9px;
+        font-weight: 600;
+        transition: all 160ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .sidebar-dropdown > button:hover {
+        background-color: alpha(@accent_bg_color, 0.22);
+        border-color: alpha(@accent_color, 0.42);
+    }
+    .sidebar-dropdown > button:active {
+        background-color: alpha(@accent_bg_color, 0.28);
+    }
+
+    .sidebar-save-btn {
+        background-color: alpha(@success_bg_color, 0.16);
+        color: @success_color;
+        border: 1px solid alpha(@success_color, 0.28);
+        padding: 8px 10px;
+    }
+    .sidebar-save-btn:hover {
+        background-color: alpha(@success_bg_color, 0.26);
+        border-color: alpha(@success_color, 0.44);
+    }
+    .sidebar-save-btn:active {
+        background-color: alpha(@success_bg_color, 0.32);
+    }
+
+    .sidebar-theme-btn {
+        background-color: alpha(@warning_bg_color, 0.16);
+        color: @warning_color;
+        border: 1px solid alpha(@warning_color, 0.28);
+    }
+    .sidebar-theme-btn:hover {
+        background-color: alpha(@warning_bg_color, 0.26);
+        border-color: alpha(@warning_color, 0.42);
+    }
+    .sidebar-theme-btn:active {
+        background-color: alpha(@warning_bg_color, 0.32);
+    }
+
+    .sidebar-settings-btn {
+        background-color: alpha(@accent_bg_color, 0.14);
+        color: @accent_color;
+        border: 1px solid alpha(@accent_color, 0.28);
+    }
+    .sidebar-settings-btn:hover {
+        background-color: alpha(@accent_bg_color, 0.24);
+        border-color: alpha(@accent_color, 0.42);
+    }
+    .sidebar-settings-btn:active {
+        background-color: alpha(@accent_bg_color, 0.30);
+    }
+
+    .sidebar-about-btn {
+        background-color: alpha(currentColor, 0.07);
+        color: @window_fg_color;
+        border: 1px solid alpha(currentColor, 0.14);
+    }
+    .sidebar-about-btn:hover {
+        background-color: alpha(currentColor, 0.14);
+        border-color: alpha(currentColor, 0.24);
+    }
+    .sidebar-about-btn:active {
+        background-color: alpha(currentColor, 0.20);
     }
 
     /* Amberol-Style Immersive Seamless HeaderBar */
