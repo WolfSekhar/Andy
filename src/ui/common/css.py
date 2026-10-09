@@ -272,10 +272,13 @@ APPLICATION_CSS = b"""
 
     /* True Pure Light Mode (Crisp & Bright, Zero Grey) */
     window.light-theme,
-    window.light-theme .background,
-    .light-theme {
+    window.background.light-theme,
+    .light-theme,
+    .light-theme .sidebar-pane,
+    window.light-theme .sidebar-pane {
         background-color: #ffffff;
-        background-image: linear-gradient(180deg, rgba(53, 132, 228, 0.03) 0%, transparent 160px);
+        background: #ffffff;
+        background-image: none;
         color: #1a1a1a;
     }
     window.light-theme .boxed-list,
@@ -288,10 +291,13 @@ APPLICATION_CSS = b"""
 
     /* True Deep Dark Mode (Sleek & Obsidian, Zero Mid-Grey) */
     window.dark-theme,
-    window.dark-theme .background,
-    .dark-theme {
+    window.background.dark-theme,
+    .dark-theme,
+    .dark-theme .sidebar-pane,
+    window.dark-theme .sidebar-pane {
         background-color: #121214;
-        background-image: linear-gradient(180deg, rgba(53, 132, 228, 0.04) 0%, transparent 160px);
+        background: #121214;
+        background-image: none;
         color: #f4f4f5;
     }
     window.dark-theme .boxed-list,
@@ -314,5 +320,5 @@ def apply_application_css():
         Gtk.StyleContext.add_provider_for_display(
             display,
             css_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            Gtk.STYLE_PROVIDER_PRIORITY_USER
         )
