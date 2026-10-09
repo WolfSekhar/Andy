@@ -24,7 +24,7 @@ def build_scrcpy_args(
     options: List[str] = []
 
     if mode == "mk":
-        options.extend(["--max-size=128", "--fullscreen", "--no-audio"])
+        options.extend(["--max-size=300", "--fullscreen", "--no-audio"])
         options.extend(build_advanced_args(advanced))
         return options
 

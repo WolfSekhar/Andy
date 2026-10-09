@@ -102,7 +102,7 @@ class TestCoreBuilder(unittest.TestCase):
 
     def test_connect_mk_mode(self):
         opts = build_scrcpy_args("test-serial", self.stream, self.advanced, mode="mk")
-        self.assertIn("--max-size=128", opts)
+        self.assertIn("--max-size=300", opts)
         self.assertIn("--fullscreen", opts)
         self.assertIn("--no-audio", opts)
 

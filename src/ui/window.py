@@ -21,21 +21,7 @@ from ui.cards.details.details_card import DetailsCard
 
 from ui.header_bar import AndyHeaderBar
 from ui.settings_dialog import SettingsDialog
-from ui.layouts import (
-    ClassicLayout,
-    WorkstationLayout,
-    StudioDeckLayout,
-    CompactInspectorLayout,
-    ModularHubLayout,
-    ActionAssistantLayout,
-    LayoutManager,
-    LAYOUT_CLASSIC,
-    LAYOUT_WORKSTATION,
-    LAYOUT_STUDIO,
-    LAYOUT_INSPECTOR,
-    LAYOUT_MODULAR_HUB,
-    LAYOUT_ACTION_ASSISTANT,
-)
+from ui.layouts import ClassicLayout, LAYOUT_CLASSIC
 
 class AndyWindow(Gtk.ApplicationWindow):
     SCALE_STEPS = UI_SCALE_STEPS
@@ -65,7 +51,6 @@ class AndyWindow(Gtk.ApplicationWindow):
             on_profile_selected=self.on_profile_selected,
             on_save_profile_clicked=self.on_save_profile_clicked,
             on_settings_clicked=self.on_settings_clicked,
-            on_layout_selected=self.on_layout_selected,
         )
         self.set_titlebar(self.header_bar.widget)
 
@@ -73,31 +58,19 @@ class AndyWindow(Gtk.ApplicationWindow):
         self.toolbar_view = Adw.ToolbarView()
         self.set_child(self.toolbar_view)
 
-        # Layout ViewStack
-        self.layout_stack = Adw.ViewStack()
-        self.toolbar_view.set_content(self.layout_stack)
-
         self.main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.main_vbox.set_vexpand(True)
         self.main_vbox.set_hexpand(True)
+        self.toolbar_view.set_content(self.main_vbox)
 
         # Top section & split view (builds classic card widgets on self and main_vbox)
         self.setup_device_selection()
         self.setup_split_view()
 
-        # Modular Layout Manager
-        self.layout_manager = LayoutManager(window=self, view_stack=self.layout_stack)
-        self._register_layouts()
-
         # Initial device and profile load
         self.devices = []
         self.refresh_devices()
         self.refresh_profiles()
-
-        # Load saved layout preference
-        saved_layout = get_setting("active_layout", LAYOUT_CLASSIC)
-        self.header_bar.set_active_layout(saved_layout)
-        self.layout_manager.switch_to_layout(saved_layout)
 
         # Handle window close to cleanup subprocess
         self.connect("close-request", self.on_close_request)
@@ -272,28 +245,6 @@ class AndyWindow(Gtk.ApplicationWindow):
         self.stream_card.type_change_callback = self.advanced_card.set_camera_mode
         self.advanced_card.set_camera_mode(self.stream_card.type_dropdown.get_selected() == 1)
 
-    def _register_layouts(self):
-        """Register all modular layouts in LayoutManager."""
-        class PrebuiltClassicLayout(ClassicLayout):
-            def get_widget(self_inner):
-                return self.main_vbox
-
-        self.layout_manager.register_layout(LAYOUT_CLASSIC, PrebuiltClassicLayout(self))
-        self.layout_manager.register_layout(LAYOUT_WORKSTATION, WorkstationLayout)
-        self.layout_manager.register_layout(LAYOUT_STUDIO, StudioDeckLayout)
-        self.layout_manager.register_layout(LAYOUT_INSPECTOR, CompactInspectorLayout)
-        self.layout_manager.register_layout(LAYOUT_MODULAR_HUB, ModularHubLayout)
-        self.layout_manager.register_layout(LAYOUT_ACTION_ASSISTANT, ActionAssistantLayout)
-
-    def on_layout_selected(self, layout_id: str, *args):
-        """Callback triggered when user selects a layout from the header bar."""
-        if not layout_id or not hasattr(self, "layout_manager"):
-            return
-        layout_str = str(layout_id)
-        if self.layout_manager.get_active_layout_id() != layout_str:
-            self.layout_manager.switch_to_layout(layout_str)
-            set_setting("active_layout", layout_str)
-
     def on_close_request(self, window):
         if hasattr(self, 'stream_card') and hasattr(self.stream_card, 'stop_monitor_event'):
             self.stream_card.stop_monitor_event.set()
@@ -367,7 +318,7 @@ class AndyWindow(Gtk.ApplicationWindow):
         if index == Gtk.INVALID_LIST_POSITION or not self.devices:
             return
         serial = self.devices[index]['serial']
-        options = ["--max-size=128", "--fullscreen", "--no-audio"] + self.advanced_card.get_stream_options()
+        options = ["--max-size=300", "--fullscreen", "--no-audio"] + self.advanced_card.get_stream_options()
         self.launch_scrcpy(serial, options, mode="mk")
 
     def launch_scrcpy(self, serial: str, options: List[str], mode: str = "stream"):
