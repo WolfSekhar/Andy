@@ -49,7 +49,8 @@ class AndyWindow(Gtk.ApplicationWindow):
         # Custom CSS
         self.setup_css()
 
-        # Clean titlebar (HeaderBar with centered title only, system window controls)
+        # Amberol-style seamless titlebar (textless, flat, immersed into window surface)
+        self.add_css_class("amberol-window")
         self.header_bar = AndyHeaderBar(
             on_theme_toggled=self.on_theme_toggled,
             on_profile_selected=self.on_profile_selected,

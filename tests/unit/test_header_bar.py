@@ -48,10 +48,12 @@ class TestAndyHeaderBar:
         assert isinstance(hb.save_button, Gtk.Button)
         assert isinstance(hb.settings_button, Gtk.Button)
 
-        # Title widget
-        assert isinstance(hb.window_title, Adw.WindowTitle)
-        assert hb.window_title.get_title() == "Andy"
-        assert hb.window_title.get_subtitle() == "scrcpy Wayland Controller"
+        # Amberol-style seamless titlebar: no text in the title bar
+        assert hb.widget.get_show_title() is False
+        assert hb.widget.get_title_widget() is None
+        assert hb.window_title is None
+        assert hb.widget.has_css_class("flat")
+        assert hb.widget.has_css_class("amberol-header")
 
     def test_theme_button_triggers_callback(self, dummy_callbacks):
         hb = AndyHeaderBar(**dummy_callbacks)

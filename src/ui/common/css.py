@@ -162,6 +162,42 @@ APPLICATION_CSS = b"""
         font-weight: 500;
         transition: all 150ms ease-in-out;
     }
+
+    /* Amberol-Style Immersive Seamless HeaderBar */
+    headerbar,
+    headerbar.flat,
+    headerbar.amberol-header {
+        background: transparent;
+        background-color: transparent;
+        background-image: none;
+        box-shadow: none;
+        border: none;
+        border-bottom: none;
+        border-style: none;
+        border-width: 0;
+    }
+
+    headerbar windowhandle {
+        background: transparent;
+    }
+
+    /* Floating window controls */
+    headerbar button.titlebutton {
+        background: transparent;
+        border-radius: 9999px;
+        transition: background-color 150ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    headerbar button.titlebutton:hover {
+        background-color: alpha(currentColor, 0.12);
+    }
+    headerbar button.titlebutton:active {
+        background-color: alpha(currentColor, 0.22);
+    }
+
+    /* Ambient window surface gradient */
+    window.background {
+        background: linear-gradient(180deg, alpha(@accent_bg_color, 0.04) 0%, transparent 140px), @window_bg_color;
+    }
 """
 
 def apply_application_css():

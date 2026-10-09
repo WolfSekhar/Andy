@@ -12,6 +12,10 @@ class AndyHeaderBar:
 
     def __init__(self, on_theme_toggled, on_profile_selected, on_save_profile_clicked, on_settings_clicked):
         self.widget = Adw.HeaderBar()
+        self.widget.add_css_class("flat")
+        self.widget.add_css_class("amberol-header")
+        self.widget.set_show_title(False)
+        self.widget.set_title_widget(None)
         self.style_manager = Adw.StyleManager.get_default()
 
         # Theme Mode Toggle Button (Light/Dark)
@@ -39,12 +43,8 @@ class AndyHeaderBar:
         self.settings_button.set_tooltip_text("Settings & Profiles")
         self.settings_button.connect("clicked", lambda b: on_settings_clicked())
 
-        # Title widget (HeaderBar only hosts the centered window title and system window controls)
-        self.window_title = Adw.WindowTitle(
-            title="Andy",
-            subtitle="scrcpy Wayland Controller"
-        )
-        self.widget.set_title_widget(self.window_title)
+        # Amberol-style seamless titlebar: no text in the titlebar
+        self.window_title = None
 
     def update_theme_icon(self):
         if self.style_manager.get_dark():

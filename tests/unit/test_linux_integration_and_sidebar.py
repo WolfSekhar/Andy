@@ -110,17 +110,20 @@ class TestLinuxIntegrationAndSidebar(unittest.TestCase):
     # 4. Clean Titlebar (AndyHeaderBar)
     # =========================================================================
     def test_clean_header_bar_structure(self):
-        """Verifies that AndyHeaderBar titlebar has only window title and no packed buttons."""
+        """Verifies that AndyHeaderBar has Amberol-style textless seamless headerbar."""
         hb = AndyHeaderBar(
             on_theme_toggled=lambda: None,
             on_profile_selected=lambda d, p: None,
             on_save_profile_clicked=lambda: None,
             on_settings_clicked=lambda: None
         )
-        # HeaderBar widget is valid
+        # HeaderBar widget is valid and textless (Amberol-style)
         self.assertIsInstance(hb.widget, Adw.HeaderBar)
-        self.assertIsInstance(hb.window_title, Adw.WindowTitle)
-        self.assertEqual(hb.window_title.get_title(), APP_NAME)
+        self.assertFalse(hb.widget.get_show_title())
+        self.assertIsNone(hb.widget.get_title_widget())
+        self.assertIsNone(hb.window_title)
+        self.assertTrue(hb.widget.has_css_class("flat"))
+        self.assertTrue(hb.widget.has_css_class("amberol-header"))
 
         # Controls exist as references ready for the sidebar
         self.assertIsInstance(hb.theme_button, Gtk.Button)
