@@ -269,6 +269,38 @@ APPLICATION_CSS = b"""
     window.background {
         background: linear-gradient(180deg, alpha(@accent_bg_color, 0.04) 0%, transparent 140px), @window_bg_color;
     }
+
+    /* True Pure Light Mode (Crisp & Bright, Zero Grey) */
+    window.light-theme,
+    window.light-theme .background,
+    .light-theme {
+        background-color: #ffffff;
+        background-image: linear-gradient(180deg, rgba(53, 132, 228, 0.03) 0%, transparent 160px);
+        color: #1a1a1a;
+    }
+    window.light-theme .boxed-list,
+    window.light-theme .card {
+        background-color: #f7f8fa;
+        color: #1a1a1a;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    /* True Deep Dark Mode (Sleek & Obsidian, Zero Mid-Grey) */
+    window.dark-theme,
+    window.dark-theme .background,
+    .dark-theme {
+        background-color: #121214;
+        background-image: linear-gradient(180deg, rgba(53, 132, 228, 0.04) 0%, transparent 160px);
+        color: #f4f4f5;
+    }
+    window.dark-theme .boxed-list,
+    window.dark-theme .card {
+        background-color: #1e1e24;
+        color: #f4f4f5;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+    }
 """
 
 def apply_application_css():

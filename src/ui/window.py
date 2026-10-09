@@ -452,6 +452,14 @@ class AndyWindow(Gtk.ApplicationWindow):
     def on_refresh_clicked(self, button):
         self.refresh_devices()
 
+    def _update_theme_classes(self):
+        if self.style_manager.get_dark():
+            self.add_css_class("dark-theme")
+            self.remove_css_class("light-theme")
+        else:
+            self.add_css_class("light-theme")
+            self.remove_css_class("dark-theme")
+
     def apply_saved_theme(self):
         theme = get_setting("theme", "default")
         if theme == "dark":
@@ -460,6 +468,7 @@ class AndyWindow(Gtk.ApplicationWindow):
             self.style_manager.set_color_scheme(Adw.ColorScheme.FORCE_LIGHT)
         else:
             self.style_manager.set_color_scheme(Adw.ColorScheme.DEFAULT)
+        self._update_theme_classes()
 
     def on_theme_toggled(self):
         if self.style_manager.get_dark():
@@ -468,6 +477,7 @@ class AndyWindow(Gtk.ApplicationWindow):
         else:
             self.style_manager.set_color_scheme(Adw.ColorScheme.FORCE_DARK)
             set_setting("theme", "dark")
+        self._update_theme_classes()
         self.header_bar.update_theme_icon()
 
     def refresh_profiles(self, select_name: Optional[str] = None):
