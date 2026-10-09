@@ -30,3 +30,10 @@ Andy is a modular Python and GTK4 (Libadwaita) application designed as a modern,
 *   **Composition Over Inheritance**: Prefer wrapping `Adw` widgets (like `Adw.HeaderBar`) rather than subclassing to avoid issues with final types in Libadwaita.
 *   **Async Operations**: All blocking CLI calls (ADB/scrcpy) must run in background threads and update the UI via `GLib.idle_add`.
 *   **Process Lifecycle**: Subprocesses are tracked locally and monitored via `GLib.child_watch_add` for automatic UI state resets on exit.
+
+## Versioning Protocol & Agent Instructions
+*   **Mandatory Version Bump**: Upon implementing new features, bug fixes, or notable UI changes, the agent MUST automatically increment the version number in accordance with Semantic Versioning (SemVer: `MAJOR.MINOR.PATCH`).
+*   **Synchronized Metadata**:
+    - Update `VERSION` in `src/core/config.py`.
+    - Add a `<release version="..." date="...">` entry with clear release highlights in `data/com.wolfsekhar.Andy.metainfo.xml`.
+*   **Visual & Documentation Consistency**: Whenever UI changes affect visible version strings (such as the sidebar's `Andy v{VERSION}` label), regenerate application screenshots in `assets/screenshots/` and keep `README.md` and walkthrough documentation aligned.

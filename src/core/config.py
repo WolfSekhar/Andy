@@ -2,7 +2,7 @@ import os
 
 APP_ID = 'com.wolfsekhar.Andy'
 APP_NAME = 'Andy'
-VERSION = '1.2.0'
+VERSION = '1.3.0'
 
 # Standard directory paths & FreeDesktop XDG Base Directory Specification
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
