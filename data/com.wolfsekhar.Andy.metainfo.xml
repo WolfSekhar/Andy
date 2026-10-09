@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.wolfsekhar.Andy</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Andy</name>
+  <summary>Modern GTK4 and Wayland-native scrcpy GUI for Android mirroring</summary>
+  <description>
+    <p>
+      Andy is a fast, responsive, and elegant Libadwaita wrapper for scrcpy on Linux desktops.
+      It enables high-framerate screen mirroring, webcam streaming, audio forwarding, and lightweight
+      keyboard and mouse input bridging with zero overhead.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Dynamic native resolution calculation with proportional quality presets</li>
+      <li>Virtual display generation with dynamic flex aspect ratio adjustment (scrcpy 5.0)</li>
+      <li>Front, back, and external camera streaming with high-speed framerate selection</li>
+      <li>Low-latency UHID keyboard, mouse, and physical gamepad forwarding</li>
+      <li>Dedicated Connect M/K mode for broken screens or high-efficiency typing</li>
+      <li>Orientation awareness and live rotation monitoring</li>
+      <li>Wayland-native Libadwaita interface with Light and Dark GNOME Circle styling</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">com.wolfsekhar.Andy.desktop</launchable>
+  <categories>
+    <category>Utility</category>
+    <category>System</category>
+  </categories>
+  <developer id="com.wolfsekhar">
+    <name>Sekhar</name>
+  </developer>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="1.2.0" date="2026-10-09">
+      <description>
+        <p>Introduced permanent non-collapsible slim utility sidebar, full GNOME Circle theming for light and dark modes, FreeDesktop XDG specifications, sleep inhibitor, and scrcpy 5.0 feature suite.</p>
+      </description>
+    </release>
+  </releases>
+</component>

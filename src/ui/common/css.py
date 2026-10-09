@@ -144,6 +144,24 @@ APPLICATION_CSS = b"""
     .linked > button {
         transition: all 150ms ease-in-out;
     }
+
+    /* Permanent Slim Utility Sidebar */
+    .sidebar-pane {
+        background-color: alpha(@card_bg_color, 0.45);
+        border-right: 1px solid @borders;
+        padding: 16px 14px;
+    }
+    .sidebar-pane .dim-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+    }
+    .sidebar-btn {
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 150ms ease-in-out;
+    }
 """
 
 def apply_application_css():

@@ -22,6 +22,7 @@ from services.remote_actions import (
     reboot_device,
     toggle_show_touches
 )
+from services.notification_service import notification_service
 
 class DetailsCard(Gtk.Box):
     def __init__(self, **kwargs):
@@ -171,6 +172,7 @@ class DetailsCard(Gtk.Box):
             def update_ui():
                 if success:
                     self.status_label.set_text(f"Screenshot: {os.path.basename(result)}")
+                    notification_service.notify_screenshot(result)
                 else:
                     self.status_label.set_text(f"Capture failed: {result}")
             GLib.idle_add(update_ui)

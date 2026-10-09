@@ -2,12 +2,12 @@ import os
 import json
 import shutil
 from typing import List, Optional, Dict, Any
-from core.config import DATA_DIR, PROFILES_DIR
+from core.config import DATA_DIR, PROFILES_DIR, LEGACY_DATA_DIR
 
 def ensure_profiles_dir():
     """
     Ensures the profiles directory exists and migrates any legacy profile files
-    from DATA_DIR to PROFILES_DIR (excluding settings.json).
+    from DATA_DIR or LEGACY_DATA_DIR to PROFILES_DIR (excluding settings.json).
     """
     try:
         if not os.path.exists(PROFILES_DIR):
@@ -15,16 +15,19 @@ def ensure_profiles_dir():
     except OSError:
         return
 
-    if os.path.exists(DATA_DIR) and os.path.exists(PROFILES_DIR):
-        try:
-            for item in os.listdir(DATA_DIR):
-                item_path = os.path.join(DATA_DIR, item)
-                if os.path.isfile(item_path) and item.endswith('.json') and item != 'settings.json':
-                    dest_path = os.path.join(PROFILES_DIR, item)
-                    if not os.path.exists(dest_path):
-                        shutil.move(item_path, dest_path)
-        except OSError:
-            pass
+    # Migrate from DATA_DIR or LEGACY_DATA_DIR
+    source_dirs = [DATA_DIR, LEGACY_DATA_DIR, os.path.join(LEGACY_DATA_DIR, 'profiles')]
+    for s_dir in source_dirs:
+        if os.path.exists(s_dir) and os.path.abspath(s_dir) != os.path.abspath(PROFILES_DIR):
+            try:
+                for item in os.listdir(s_dir):
+                    item_path = os.path.join(s_dir, item)
+                    if os.path.isfile(item_path) and item.endswith('.json') and item != 'settings.json':
+                        dest_path = os.path.join(PROFILES_DIR, item)
+                        if not os.path.exists(dest_path):
+                            shutil.copy2(item_path, dest_path)
+            except OSError:
+                pass
 
 def sanitize_filename(name: str) -> str:
     """

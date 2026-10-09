@@ -19,7 +19,6 @@ class AndyHeaderBar:
         self.theme_button.set_valign(Gtk.Align.CENTER)
         self.theme_button.connect("clicked", lambda b: on_theme_toggled())
         self.update_theme_icon()
-        self.widget.pack_start(self.theme_button)
 
         # Profile Selection Dropdown
         self.profile_model = Gtk.StringList()
@@ -27,23 +26,20 @@ class AndyHeaderBar:
         self.profile_dropdown.set_valign(Gtk.Align.CENTER)
         self.profile_dropdown.set_tooltip_text("Load Saved Profile")
         self.profile_dropdown.connect("notify::selected", lambda d, p: on_profile_selected(d, p))
-        self.widget.pack_start(self.profile_dropdown)
 
         # Save Profile Button
         self.save_button = Gtk.Button(icon_name="document-save-symbolic")
         self.save_button.set_valign(Gtk.Align.CENTER)
         self.save_button.set_tooltip_text("Save Profile")
         self.save_button.connect("clicked", lambda b: on_save_profile_clicked())
-        self.widget.pack_start(self.save_button)
 
         # Settings Button
-        self.settings_button = Gtk.Button(icon_name="emblem-system-symbolic")
+        self.settings_button = Gtk.Button(label="Settings", icon_name="emblem-system-symbolic")
         self.settings_button.set_valign(Gtk.Align.CENTER)
         self.settings_button.set_tooltip_text("Settings & Profiles")
         self.settings_button.connect("clicked", lambda b: on_settings_clicked())
-        self.widget.pack_end(self.settings_button)
 
-        # Title widget
+        # Title widget (HeaderBar only hosts the centered window title and system window controls)
         self.window_title = Adw.WindowTitle(
             title="Andy",
             subtitle="scrcpy Wayland Controller"

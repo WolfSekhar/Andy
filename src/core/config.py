@@ -2,13 +2,26 @@ import os
 
 APP_ID = 'com.wolfsekhar.Andy'
 APP_NAME = 'Andy'
+VERSION = '1.2.0'
 
-# Standard directory paths
+# Standard directory paths & FreeDesktop XDG Base Directory Specification
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DATA_DIR = os.path.join(ROOT_DIR, 'data')
+LEGACY_DATA_DIR = os.path.join(ROOT_DIR, 'data')
+
+XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME') or os.path.expanduser('~/.config')
+XDG_DATA_HOME = os.environ.get('XDG_DATA_HOME') or os.path.expanduser('~/.local/share')
+XDG_CACHE_HOME = os.environ.get('XDG_CACHE_HOME') or os.path.expanduser('~/.cache')
+
+# Use local repo data when ANDY_LOCAL_DATA=1 (e.g. tests/isolated development), otherwise XDG standard
+if os.environ.get('ANDY_LOCAL_DATA') == '1':
+    DATA_DIR = LEGACY_DATA_DIR
+else:
+    DATA_DIR = os.path.join(XDG_CONFIG_HOME, 'andy')
+
 PROFILES_DIR = os.path.join(DATA_DIR, 'profiles')
 SETTINGS_FILE = os.path.join(DATA_DIR, 'settings.json')
 ASSETS_DIR = os.path.join(ROOT_DIR, 'assets')
+CACHE_DIR = os.path.join(XDG_CACHE_HOME, 'andy')
 DEFAULT_RECORDINGS_DIR = os.path.expanduser('~/Videos/Andy')
 DEFAULT_SCREENSHOTS_DIR = os.path.expanduser('~/Pictures/Andy')
 

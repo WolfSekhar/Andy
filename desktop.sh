@@ -28,7 +28,14 @@ cp "$ICON_PATH" "$USER_ICON_PATH"
 cp "$ICON_PATH" "$LEGACY_HICOLOR_ICON_PATH"
 cp "$ICON_PATH" "$LEGACY_ICON_PATH"
 
-# Generate the desktop file matching the application_id
+# Install AppStream metainfo
+METAINFO_DIR="$HOME/.local/share/metainfo"
+mkdir -p "$METAINFO_DIR"
+if [ -f "$APP_DIR/data/$APP_ID.metainfo.xml" ]; then
+    cp "$APP_DIR/data/$APP_ID.metainfo.xml" "$METAINFO_DIR/"
+fi
+
+# Generate the desktop file matching the application_id with Desktop Actions
 cat <<EOF > "$DESKTOP_FILE_PATH"
 [Desktop Entry]
 Name=Andy
@@ -43,6 +50,17 @@ Keywords=scrcpy;android;mirror;adb;
 StartupNotify=true
 StartupWMClass=$APP_ID
 X-GNOME-Authors=gitlab.com/wolfsekhar
+Actions=ScreenStream;ConnectMK;
+
+[Desktop Action ScreenStream]
+Name=Start Screen Mirroring
+Exec=$EXEC_PATH --start
+Icon=video-display-symbolic
+
+[Desktop Action ConnectMK]
+Name=Connect Keyboard & Mouse
+Exec=$EXEC_PATH --connect-mk
+Icon=input-keyboard-symbolic
 EOF
 
 # Make the desktop file executable

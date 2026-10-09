@@ -28,6 +28,7 @@ htmlcov/
 .DS_Store
 
 # User data
-data/
+data/*
+!data/*.metainfo.xml
 *.mp4
 test_screenshots/

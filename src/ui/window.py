@@ -3,23 +3,27 @@ import sys
 import threading
 from typing import List, Optional
 
-from gi.repository import Gtk, Adw, GLib
+from gi.repository import Gtk, Adw, GLib, Gdk
 
 from core.process_launcher import ScrcpyProcessManager
 from core.config import UI_SCALE_STEPS
 from services.device_service import get_connected_devices
 from services.profile_service import save_profile, load_profile, list_profiles
 from services.settings_service import get_setting, set_setting
+from services.notification_service import notification_service
+from services.inhibit_service import inhibit_service
 
 from ui.common.css import apply_application_css
 from ui.common.scale_control import ScaleControl
 from ui.common.error_dialog import show_error_dialog
+from ui.about_dialog import show_about_dialog
 
 from ui.cards.stream.stream_card import StreamCard
 from ui.cards.advanced.advanced_card import AdvancedCard
 from ui.cards.details.details_card import DetailsCard
 
 from ui.header_bar import AndyHeaderBar
+from ui.sidebar import AndySidebar
 from ui.settings_dialog import SettingsDialog
 from ui.layouts import ClassicLayout, LAYOUT_CLASSIC
 
@@ -33,7 +37,7 @@ class AndyWindow(Gtk.ApplicationWindow):
         self.set_icon_name("com.wolfsekhar.Andy")
         self.set_resizable(True)
         self.set_decorated(True)
-        self.set_default_size(950, 650)
+        self.set_default_size(1050, 680)
 
         # Process supervisor
         self.process_manager = ScrcpyProcessManager()
@@ -45,7 +49,7 @@ class AndyWindow(Gtk.ApplicationWindow):
         # Custom CSS
         self.setup_css()
 
-        # Header bar
+        # Clean titlebar (HeaderBar with centered title only, system window controls)
         self.header_bar = AndyHeaderBar(
             on_theme_toggled=self.on_theme_toggled,
             on_profile_selected=self.on_profile_selected,
@@ -54,14 +58,39 @@ class AndyWindow(Gtk.ApplicationWindow):
         )
         self.set_titlebar(self.header_bar.widget)
 
+        # Permanent slim utility sidebar
+        self.sidebar = AndySidebar(
+            theme_button=self.header_bar.theme_button,
+            profile_dropdown=self.header_bar.profile_dropdown,
+            save_button=self.header_bar.save_button,
+            settings_button=self.header_bar.settings_button,
+            on_about_clicked=self.on_about_clicked,
+        )
+
         # Main layout container
         self.toolbar_view = Adw.ToolbarView()
         self.set_child(self.toolbar_view)
 
+        # Horizontal paning: Left = Permanent Slim Sidebar, Right = Main Content
+        self.content_panes = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.content_panes.set_vexpand(True)
+        self.content_panes.set_hexpand(True)
+        self.toolbar_view.set_content(self.content_panes)
+
+        # Append permanent non-collapsible slim sidebar on the left
+        self.content_panes.append(self.sidebar)
+
+        # Right side: Main vertical box with device bar and classic cards
+        self.main_scroll = Gtk.ScrolledWindow()
+        self.main_scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.main_scroll.set_hexpand(True)
+        self.main_scroll.set_vexpand(True)
+        self.content_panes.append(self.main_scroll)
+
         self.main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.main_vbox.set_vexpand(True)
         self.main_vbox.set_hexpand(True)
-        self.toolbar_view.set_content(self.main_vbox)
+        self.main_scroll.set_child(self.main_vbox)
 
         # Top section & split view (builds classic card widgets on self and main_vbox)
         self.setup_device_selection()
@@ -71,6 +100,18 @@ class AndyWindow(Gtk.ApplicationWindow):
         self.devices = []
         self.refresh_devices()
         self.refresh_profiles()
+
+        # Services application reference
+        app = self.get_application()
+        if app:
+            notification_service.set_application(app)
+            inhibit_service.set_application(app)
+        self.connect("notify::application", self._on_application_set)
+
+        # Keyboard shortcuts controller
+        key_controller = Gtk.EventControllerKey.new()
+        key_controller.connect("key-pressed", self.on_key_pressed)
+        self.add_controller(key_controller)
 
         # Handle window close to cleanup subprocess
         self.connect("close-request", self.on_close_request)
@@ -246,6 +287,7 @@ class AndyWindow(Gtk.ApplicationWindow):
         self.advanced_card.set_camera_mode(self.stream_card.type_dropdown.get_selected() == 1)
 
     def on_close_request(self, window):
+        inhibit_service.uninhibit()
         if hasattr(self, 'stream_card') and hasattr(self.stream_card, 'stop_monitor_event'):
             self.stream_card.stop_monitor_event.set()
         self.process_manager.stop()
@@ -364,6 +406,7 @@ class AndyWindow(Gtk.ApplicationWindow):
         if hasattr(self, "layout_manager"):
             self.layout_manager.on_stream_state_changed(active, mode)
         if active:
+            inhibit_service.inhibit(self, "Mirroring Android Display")
             if mode == "stream":
                 self.stream_label.set_text("STOP")
                 self.stream_icon.set_from_icon_name("media-playback-stop-symbolic")
@@ -384,6 +427,7 @@ class AndyWindow(Gtk.ApplicationWindow):
             self.device_dropdown.set_sensitive(False)
             self.refresh_button.set_sensitive(False)
         else:
+            inhibit_service.uninhibit()
             self.stream_label.set_text("STREAM")
             self.stream_icon.set_from_icon_name("media-playback-start-symbolic")
             self.stream_button.remove_css_class("stop-btn")
@@ -475,3 +519,35 @@ class AndyWindow(Gtk.ApplicationWindow):
     def on_settings_clicked(self):
         dialog = SettingsDialog(self, self.refresh_profiles)
         dialog.present()
+
+    def _on_application_set(self, window, pspec):
+        app = self.get_application()
+        if app:
+            notification_service.set_application(app)
+            inhibit_service.set_application(app)
+
+    def on_about_clicked(self):
+        show_about_dialog(self)
+
+    def on_key_pressed(self, controller, keyval, keycode, state):
+        modifiers = state & Gtk.accelerator_get_default_mod_mask()
+        if modifiers == Gdk.ModifierType.CONTROL_MASK:
+            if keyval == Gdk.KEY_q:
+                self.close()
+                return True
+            elif keyval == Gdk.KEY_s:
+                self.on_save_profile_clicked()
+                return True
+            elif keyval == Gdk.KEY_r:
+                self.on_refresh_clicked(self.refresh_button)
+                return True
+            elif keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter):
+                self.on_play_clicked(self.stream_button)
+                return True
+            elif keyval == Gdk.KEY_comma:
+                self.on_settings_clicked()
+                return True
+        elif keyval == Gdk.KEY_F1:
+            self.on_about_clicked()
+            return True
+        return False

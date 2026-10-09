@@ -11,5 +11,5 @@ export SDL_VIDEODRIVER=wayland
 # Activate virtual environment
 source venv/bin/activate
 
-# Run the application
-python3 src/main.py
+# Run the application with any provided CLI arguments
+python3 src/main.py "$@"

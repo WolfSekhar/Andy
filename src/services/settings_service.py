@@ -1,7 +1,7 @@
 import os
 import json
 from typing import Dict, Any, Optional
-from core.config import DATA_DIR, SETTINGS_FILE
+from core.config import DATA_DIR, SETTINGS_FILE, LEGACY_DATA_DIR
 
 DEFAULT_LAYOUT: str = "classic"
 
@@ -23,6 +23,20 @@ def load_settings() -> Dict[str, Any]:
         "ui_scale": 1.0,
         "active_layout": DEFAULT_LAYOUT,
     }
+
+    # Seamless migration from legacy repository data directory
+    if not os.path.exists(SETTINGS_FILE) and os.path.exists(LEGACY_DATA_DIR):
+        legacy_file = os.path.join(LEGACY_DATA_DIR, 'settings.json')
+        if os.path.exists(legacy_file):
+            try:
+                with open(legacy_file, 'r') as f:
+                    legacy_data = json.load(f)
+                    defaults.update(legacy_data)
+                save_settings(defaults)
+                return defaults
+            except Exception:
+                pass
+
     if not os.path.exists(SETTINGS_FILE):
         return defaults
 
